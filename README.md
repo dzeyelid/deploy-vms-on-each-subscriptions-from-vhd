@@ -1,0 +1,1 @@
+# deploy-vms-on-each-subscriptions-from-vhd
