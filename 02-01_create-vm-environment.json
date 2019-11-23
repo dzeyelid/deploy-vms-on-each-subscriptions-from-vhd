@@ -1,0 +1,81 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "vmVhdUri": {
+      "type": "string"
+    },
+    "storageAccountId": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "resourceGroupName": "[concat(parameters('prefix'), '-rg')]"
+  },
+  "resources": [
+    {
+      "name": "[variables('resourceGroupName')]",
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2019-05-01",
+      "location": "[parameters('location')]",
+      "properties": {}
+    },
+    {
+      "name": "createNetwork",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-08-01",
+      "resourceGroup": "[variables('resourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(deployment().properties.templateLink.uri, '02-02_create-network.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "prefix": {
+            "value": "[parameters('prefix')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups', variables('resourceGroupName'))]"
+      ]
+    },
+    {
+      "name": "createVm",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-08-01",
+      "resourceGroup": "[variables('resourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(deployment().properties.templateLink.uri, '02-03_create-vm.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "prefix": {
+            "value": "[parameters('prefix')]"
+          },
+          "vmVhdUri": {
+            "value": "[parameters('vmVhdUri')]"
+          },
+          "storageAccountId": {
+            "value": "[parameters('storageAccountId')]"
+          },
+          "subnetId": {
+            "value": "[reference('createNetwork').outputs.subnetId.value]"
+          }
+        }
+      },
+      "dependsOn": [
+        "[concat(subscription().id, '/resourceGroups/', variables('resourceGroupName'), '/providers/Microsoft.Resources/deployments/', 'createNetwork')]"
+      ]
+    }
+  ]
+}

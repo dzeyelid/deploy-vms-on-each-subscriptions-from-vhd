@@ -1,0 +1,56 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceGroupName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "name": "[parameters('resourceGroupName')]",
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2019-05-01",
+      "location": "[parameters('location')]",
+      "properties": {}
+    },
+    {
+      "name": "createStorageForVhd",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-08-01",
+      "location": "[parameters('location')]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(deployment().properties.templateLink.uri, '01-01_create-storage-for-vhd.json')]",
+          "contentVersion": "1.0.0.0"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "storageAccountId": {
+      "type": "string",
+      "value": "[reference('createStorageForVhd').outputs.storageAccountId.value]"
+    },
+    "storageAccountName": {
+      "type": "string",
+      "value": "[reference('createStorageForVhd').outputs.storageAccountName.value]"
+    },
+    "storageContainerName": {
+      "type": "string",
+      "value": "[reference('createStorageForVhd').outputs.storageContainerName.value]"
+    },
+    "storageAccountKey": {
+      "type": "string",
+      "value": "[reference('createStorageForVhd').outputs.storageAccountKey.value]"
+    }
+  }
+}

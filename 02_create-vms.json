@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "numberOfVms": {
+      "type": "int"
+    },
+    "vmVhdUri": {
+      "type": "string"
+    },
+    "storageAccountId": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "name": "createVMEnv",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-08-01",
+      "location": "[parameters('location')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(deployment().properties.templateLink.uri, '02-01_create-vm-environment.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "prefix": {
+            "value": "[concat(parameters('prefix'), padLeft(copyIndex(1), 3, '0'))]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "vmVhdUri": {
+            "value": "[parameters('vmVhdUri')]"
+          },
+          "storageAccountId": {
+            "value": "[parameters('storageAccountId')]"
+          }
+        }
+      },
+      "copy": {
+        "name": "vmEnvCopy",
+        "count": "[parameters('numberOfVms')]"
+      }
+    }
+  ]
+}
