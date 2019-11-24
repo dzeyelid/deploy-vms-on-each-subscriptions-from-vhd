@@ -20,7 +20,7 @@
   },
   "variables": {
     "location": "[resourceGroup().location]",
-    "vnetName": "[concat(parameters('prefix'), '-vm')]",
+    "vnetName": "[concat(parameters('prefix'), '-vnet')]",
     "subnetName": "[concat(parameters('prefix'), '-subnet')]",
     "subnetNameBastion": "AzureBastionSubnet",
     "bastionName": "[concat(parameters('prefix'), '-bastion')]",

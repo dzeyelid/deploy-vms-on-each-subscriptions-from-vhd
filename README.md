@@ -72,7 +72,6 @@ VM_VHD_URI=$(az storage blob url \
     --name ${VM_BASE_STORAGE_BLOB} \
     --output tsv)
 
-LOCATION="japaneast"
 PREFIX="<prefix>"
 NUMBER_OF_VMS="<Number of Vms>"
 
