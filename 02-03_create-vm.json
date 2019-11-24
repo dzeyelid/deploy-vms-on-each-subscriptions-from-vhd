@@ -98,7 +98,7 @@
   "variables": {
     "location": "[resourceGroup().location]",
     "vmName": "[concat(parameters('prefix'), '-vm')]",
-    "vmNicName": "[concat(parameters('prefix'), 'nic')]",
+    "vmNicName": "[concat(parameters('prefix'), '-nic')]",
     "vmNsgName": "[concat(parameters('prefix'), '-nsg')]",
     "vmDiskName": "[concat(parameters('prefix'), '-disk')]"
   },
