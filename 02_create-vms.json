@@ -9,7 +9,12 @@
       "type": "string"
     },
     "numberOfVms": {
-      "type": "int"
+      "type": "int",
+      "minValue": 1
+    },
+    "offsetOfVmIndex": {
+      "type": "int",
+      "defaultValue": 1
     },
     "vmVhdUri": {
       "type": "string"
@@ -20,7 +25,7 @@
   },
   "resources": [
     {
-      "name": "createVMEnv",
+      "name": "[concat('createVMEnv-', padLeft(copyIndex(parameters('offsetOfVmIndex')), 3, '0'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-08-01",
       "location": "[parameters('location')]",
@@ -32,7 +37,7 @@
         },
         "parameters": {
           "prefix": {
-            "value": "[concat(parameters('prefix'), padLeft(copyIndex(1), 3, '0'))]"
+            "value": "[concat(parameters('prefix'), padLeft(copyIndex(parameters('offsetOfVmIndex')), 3, '0'))]"
           },
           "location": {
             "value": "[parameters('location')]"
