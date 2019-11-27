@@ -21,7 +21,6 @@
       "name": "createStorageForVhd",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-08-01",
-      "location": "[parameters('location')]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
         "mode": "Incremental",
